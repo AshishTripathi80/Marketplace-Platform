@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql:8
+    container_name: user-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: user_db
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    restart: always
+    ports:
+      - '3001:3001'
+    depends_on:
+      - mysql-db
+    environment:
+      PORT: 3001
+      DB_HOST: mysql-db
+      DB_USER: root
+      DB_PASS: yourpassword
+      DB_NAME: user_db
+      JWT_SECRET: your_jwt_secret
+
+volumes:
+  mysql_data:
