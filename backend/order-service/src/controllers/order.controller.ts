@@ -1,3 +1,4 @@
+import { Json } from './../../node_modules/sequelize/types/utils.d';
 import { Request, Response } from "express";
 import { Order } from "../models/order.model";
 import { AuthRequest } from "../types/auth";
@@ -34,6 +35,6 @@ export const updateOrderStatus = async (req: Request, res: Response)=>{
 }
 
 export const getAllOrders= async (req: Request, res:Response)=>{
-    const orders= Order.findAll();
-    res.json(orders);
+    const orders = await Order.findAll();
+    res.status(200).json(orders);
 }
