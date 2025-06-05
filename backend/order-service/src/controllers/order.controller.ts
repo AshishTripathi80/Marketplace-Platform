@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import { Order } from "../models/order.model";
+import { AuthRequest } from "../types/auth";
 
-export const placeOrder= async (req:Request, res:Response)=>{
+export const placeOrder= async (req:AuthRequest, res:Response)=>{
     try{
         const {products, totalAmount} =req.body
-        const userId=req.user.id;
+        const userId=(req.user as any)?.id;
 
         const order= await Order.create({userId,products,totalAmount});
 
@@ -15,8 +16,8 @@ export const placeOrder= async (req:Request, res:Response)=>{
     }
 }
 
-export const getUserOrders= async (req:Request, res: Response)=>{
-    const userId=req.user.id;
+export const getUserOrders= async (req:AuthRequest, res: Response)=>{
+    const userId=(req.user as any)?.id;
     const orders= await Order.findAll({where:{userId}});
     res.json(orders);
 }
@@ -27,7 +28,7 @@ export const updateOrderStatus = async (req: Request, res: Response)=>{
     const order =await Order.findByPk(id);
     if(!order) return res.status(404).json({message:'Order not found'});
 
-    order.status=status;
+    (order as any).status=status;
     await order.save();
     res.json(order);
 }
